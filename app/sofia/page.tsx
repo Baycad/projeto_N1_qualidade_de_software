@@ -228,3 +228,60 @@ interface Income {
       setQuickExpense({ amount: "", description: "", category: "Outros" })
     }
   }
+  const addExpense = () => {
+    if (newExpense.category && newExpense.amount && newExpense.date) {
+      const numericAmount = parseCurrencyToNumber(newExpense.amount)
+      const expense: Expense = {
+        id: Date.now().toString(),
+        category: newExpense.category,
+        amount: numericAmount,
+        date: newExpense.date,
+        description: newExpense.description || "",
+        isFixed: false,
+        isPaid: false,
+      }
+      setExpenses([...expenses, expense])
+      setNewExpense({ category: "", amount: "", date: "", description: "" })
+    }
+  }
+
+  const addFixedExpense = () => {
+    if (newFixedExpense.category && newFixedExpense.amount) {
+      const numericAmount = parseCurrencyToNumber(newFixedExpense.amount)
+      const fixedExpense: FixedExpense = {
+        id: Date.now().toString(),
+        category: newFixedExpense.category,
+        amount: numericAmount,
+        description: newFixedExpense.description || "",
+        isPaid: false,
+      }
+      setFixedExpenses([...fixedExpenses, fixedExpense])
+      setNewFixedExpense({ category: "", amount: "", description: "" })
+    }
+  }
+
+  const addInstallment = () => {
+    if (
+      newInstallment.name &&
+      newInstallment.totalAmount &&
+      newInstallment.totalInstallments &&
+      newInstallment.remainingAmount
+    ) {
+      const totalAmount = parseCurrencyToNumber(newInstallment.totalAmount)
+      const totalInstallments = Number.parseInt(newInstallment.totalInstallments)
+      const remainingAmount = parseCurrencyToNumber(newInstallment.remainingAmount)
+
+      const installment: InstallmentItem = {
+        id: Date.now().toString(),
+        name: newInstallment.name,
+        totalAmount: totalAmount,
+        remainingAmount: remainingAmount,
+        totalInstallments: totalInstallments,
+        monthlyAmount: totalAmount / totalInstallments,
+        startDate: new Date().toISOString().split("T")[0],
+        isPaid: remainingAmount <= 0,
+      }
+      setInstallments([...installments, installment])
+      setNewInstallment({ name: "", totalAmount: "", totalInstallments: "", remainingAmount: "" })
+    }
+  }

@@ -146,3 +146,17 @@ interface Income {
 
     return () => clearTimeout(timeoutId)
   }, [])
+  const formatCurrency = (value: string) => {
+    const numericValue = value.replace(/\D/g, "")
+    if (!numericValue) return ""
+    const number = Number.parseInt(numericValue) / 100
+    return number.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })
+  }
+
+  const parseCurrencyToNumber = (value: string) => {
+    const numericValue = value.replace(/[^\d,]/g, "").replace(",", ".")
+    return Number.parseFloat(numericValue) || 0
+  }

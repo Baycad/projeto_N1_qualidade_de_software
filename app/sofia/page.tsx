@@ -285,3 +285,31 @@ interface Income {
       setNewInstallment({ name: "", totalAmount: "", totalInstallments: "", remainingAmount: "" })
     }
   }
+  const updateInstallmentPayment = (id: string, increment: boolean) => {
+    setInstallments(
+      installments.map((item) => {
+        if (item.id === id) {
+          const newRemainingAmount = increment
+            ? Math.max(item.remainingAmount - item.monthlyAmount, 0)
+            : Math.min(item.remainingAmount + item.monthlyAmount, item.totalAmount)
+          const isPaid = newRemainingAmount <= 0
+          return { ...item, remainingAmount: newRemainingAmount, isPaid }
+        }
+        return item
+      }),
+    )
+  }
+
+  const toggleExpensePaid = (id: string) => {
+    setExpenses(expenses.filter((expense) => expense.id !== id))
+  }
+
+  const toggleFixedExpensePaid = (id: string) => {
+    setFixedExpenses(
+      fixedExpenses.map((expense) => (expense.id === id ? { ...expense, isPaid: !expense.isPaid } : expense)),
+    )
+  }
+
+  const toggleInstallmentPaid = (id: string) => {
+    setInstallments(installments.filter((item) => item.id !== id))
+  }

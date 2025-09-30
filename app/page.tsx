@@ -5,8 +5,8 @@ import { Background } from "@/components/background"
    return (
      <main className="p-inset h-[100dvh] w-full">
        <div className="relative h-full w-full">
--        <Background />
-+        <Background src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/alt-g7Cv2QzqL3k6ey3igjNYkM32d8Fld7.mp4" />
+-        <Background src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/alt-g7Cv2QzqL3k6ey3igjNYkM32d8Fld7.mp4" />
++        <Background src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/alt-g7Cv2QzqL3k6ey3igjNYkM32d8Fld7.mp4" placeholder="/alt-placeholder.png" />
          <Newsletter />
        </div>
      </main>

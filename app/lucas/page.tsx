@@ -15,9 +15,17 @@ import { ArrowLeft } from 'lucide-react';
 export default function Page() {
   const [darkMode, setDarkMode] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState('/professional-man-smiling.png');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
+
+  const handleProfileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const fileUrl = URL.createObjectURL(event.target.files[0]);
+      setProfilePhoto(fileUrl);
+    }
+  };
 
   return (
     <div className={darkMode ? 'dark' : ''}>
@@ -29,10 +37,24 @@ export default function Page() {
           src={profilePhoto}
           alt="Profile"
           className="w-10 h-10 rounded-full cursor-pointer"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => setIsModalOpen(true)}
         />
-        <input type="file" ref={fileInputRef} className="hidden" />
       </header>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-md relative w-80">
+            <button
+              className="absolute top-2 right-2"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <IoMdClose size={20} />
+            </button>
+            <h2 className="text-lg font-bold mb-4">Editar Perfil</h2>
+            <input type="file" ref={fileInputRef} onChange={handleProfileChange} />
+          </div>
+        </div>
+      )}
 
       <main className="p-4">
         <Tabs defaultValue="tab1">
@@ -53,7 +75,7 @@ export default function Page() {
             <Card className="p-4">
               <FaUserCircle className="text-2xl mb-2" />
               <p>Informações do perfil</p>
-              <Button>Editar perfil</Button>
+              <Button onClick={() => setIsModalOpen(true)}>Editar perfil</Button>
             </Card>
           </TabsContent>
         </Tabs>

@@ -1,144 +1,89 @@
 import React, { useState, useRef } from 'react';
-
 import { FaUserCircle, FaSun, FaMoon } from 'react-icons/fa';
 import { GiPayMoney } from 'react-icons/gi';
 import { IoMdClose } from 'react-icons/io';
-
 import { Tab } from '@headlessui/react';
-
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
 import { ArrowLeft } from 'lucide-react';
 
 interface Transaction {
   id: number;
   description: string;
   amount: number;
-  date: string;
   category: string;
+  date: string;
 }
 
-export default function Page() {
+export default function FinanceApp() {
   const [darkMode, setDarkMode] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState('/professional-man-smiling.png');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [category, setCategory] = useState('');
+  const [date, setDate] = useState('');
 
-  const toggleDarkMode = () => setDarkMode(!darkMode);
-
-  const handleProfileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const fileUrl = URL.createObjectURL(event.target.files[0]);
-      setProfilePhoto(fileUrl);
-    }
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
   };
 
-  // Lista de transações simuladas
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: 1, description: 'Pagamento de Luz', amount: 120.5, date: '2025-09-28', category: 'Conta' },
-    { id: 2, description: 'Aluguel', amount: 1500, date: '2025-09-01', category: 'Moradia' },
-    { id: 3, description: 'Freelance Design', amount: 800, date: '2025-09-20', category: 'Receita' },
-  ]);
-
-  // Estado do formulário
-  const [newTransaction, setNewTransaction] = useState<Transaction>({
-    id: 0,
-    description: '',
-    amount: 0,
-    date: '',
-    category: '',
-  });
-
   const handleAddTransaction = () => {
-    if (!newTransaction.description || !newTransaction.date || !newTransaction.category) return;
-
-    const nextTransaction = {
-      ...newTransaction,
-      id: transactions.length + 1,
+    if (!description || !category || !date) return;
+    const newTransaction: Transaction = {
+      id: Date.now(),
+      description,
+      amount,
+      category,
+      date,
     };
-    setTransactions([...transactions, nextTransaction]);
+    setTransactions([...transactions, newTransaction]);
+    setDescription('');
+    setAmount(0);
+    setCategory('');
+    setDate('');
+  };
 
-    // Resetar formulário
-    setNewTransaction({ id: 0, description: '', amount: 0, date: '', category: '' });
+  const handleDeleteTransaction = (id: number) => {
+    setTransactions(transactions.filter(tx => tx.id !== id));
   };
 
   return (
     <div className={darkMode ? 'dark' : ''}>
-      <header className="flex justify-between items-center p-4">
-        <button onClick={toggleDarkMode}>
+      <header className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800">
+        <div className="flex items-center gap-2">
+          <FaUserCircle size={32} />
+          <img
+            src={profilePhoto}
+            alt="Profile"
+            className="w-10 h-10 rounded-full"
+            onClick={() => fileInputRef.current?.click()}
+          />
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) setProfilePhoto(URL.createObjectURL(file));
+            }}
+          />
+        </div>
+        <Button onClick={toggleDarkMode}>
           {darkMode ? <FaSun /> : <FaMoon />}
-        </button>
-        <img
-          src={profilePhoto}
-          alt="Profile"
-          className="w-10 h-10 rounded-full cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        />
+        </Button>
       </header>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md relative w-80">
-            <button
-              className="absolute top-2 right-2"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <IoMdClose size={20} />
-            </button>
-            <h2 className="text-lg font-bold mb-4">Editar Perfil</h2>
-            <input type="file" ref={fileInputRef} onChange={handleProfileChange} />
-          </div>
-        </div>
-      )}
-
       <main className="p-4">
-        <Tabs defaultValue="tab1">
+        <Tabs defaultValue="transactions">
           <TabsList>
-            <TabsTrigger value="tab1">Financeiro</TabsTrigger>
-            <TabsTrigger value="tab2">Perfil</TabsTrigger>
+            <TabsTrigger value="transactions">Transações</TabsTrigger>
+            <TabsTrigger value="add">Adicionar</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="tab1">
-            <Card className="p-4 mb-4">
-              <GiPayMoney className="text-2xl mb-2" />
-              <p>Resumo financeiro</p>
-            </Card>
-
-            {/* Formulário de nova transação */}
-            <Card className="p-4 mb-4">
-              <h3 className="font-bold mb-2">Adicionar Transação</h3>
-              <input
-                type="text"
-                placeholder="Descrição"
-                className="border p-1 mb-2 w-full"
-                value={newTransaction.description}
-                onChange={(e) => setNewTransaction({ ...newTransaction, description: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Valor"
-                className="border p-1 mb-2 w-full"
-                value={newTransaction.amount}
-                onChange={(e) => setNewTransaction({ ...newTransaction, amount: Number(e.target.value) })}
-              />
-              <input
-                type="date"
-                className="border p-1 mb-2 w-full"
-                value={newTransaction.date}
-                onChange={(e) => setNewTransaction({ ...newTransaction, date: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Categoria"
-                className="border p-1 mb-2 w-full"
-                value={newTransaction.category}
-                onChange={(e) => setNewTransaction({ ...newTransaction, category: e.target.value })}
-              />
-              <Button onClick={handleAddTransaction}>Adicionar</Button>
-            </Card>
-
+          <TabsContent value="transactions">
             {transactions.map((tx) => (
               <Card key={tx.id} className="p-4 mb-2 flex justify-between items-center">
                 <div>
@@ -151,19 +96,46 @@ export default function Page() {
                   </p>
                   <div className="flex gap-2 mt-1">
                     <Button size="sm">Editar</Button>
-                    <Button size="sm" variant="destructive">Excluir</Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleDeleteTransaction(tx.id)}>
+                      Excluir
+                    </Button>
                   </div>
                 </div>
               </Card>
             ))}
           </TabsContent>
 
-          <TabsContent value="tab2">
-            <Card className="p-4">
-              <FaUserCircle className="text-2xl mb-2" />
-              <p>Informações do perfil</p>
-              <Button onClick={() => setIsModalOpen(true)}>Editar perfil</Button>
-            </Card>
+          <TabsContent value="add">
+            <div className="flex flex-col gap-2">
+              <input
+                type="text"
+                placeholder="Descrição"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="p-2 border rounded"
+              />
+              <input
+                type="number"
+                placeholder="Valor"
+                value={amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+                className="p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Categoria"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="p-2 border rounded"
+              />
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="p-2 border rounded"
+              />
+              <Button onClick={handleAddTransaction}>Adicionar</Button>
+            </div>
           </TabsContent>
         </Tabs>
       </main>

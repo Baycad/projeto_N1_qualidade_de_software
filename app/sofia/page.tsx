@@ -313,3 +313,73 @@ interface Income {
   const toggleInstallmentPaid = (id: string) => {
     setInstallments(installments.filter((item) => item.id !== id))
   }
+  return (
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        isDarkMode
+          ? "bg-gradient-to-br from-gray-900 to-gray-800 text-white"
+          : "bg-gradient-to-br from-slate-50 to-blue-50"
+      } p-4`}
+    >
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <Link href="/">
+            <Button
+              variant="outline"
+              size="sm"
+              className={`px-4 py-2 border-2 font-medium transition-all duration-200 ${
+                isDarkMode
+                  ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600 hover:border-gray-500"
+                  : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+              }`}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+          </Link>
+          <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>
+            Gestão Financeira - Sofia
+          </h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className={`p-3 border-2 transition-all duration-200 ${
+              isDarkMode
+                ? "bg-gray-700 border-gray-600 text-yellow-400 hover:bg-gray-600 hover:border-gray-500"
+                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+            }`}
+          >
+            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            <span className="ml-2 text-sm font-medium">{isDarkMode ? "Claro" : "Escuro"}</span>
+          </Button>
+        </div>
+
+        {/* User Profile & Progress */}
+        <Card
+          className={`${isDarkMode ? "bg-gray-800/80 border-gray-700" : "bg-white/80 border-slate-200"} backdrop-blur-sm`}
+        >
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative">
+                <Avatar className="w-40 h-40 border-4 border-blue-200">
+                  <AvatarImage src={profilePhoto || "/placeholder.svg"} />
+                  <AvatarFallback className="text-4xl bg-blue-100 text-blue-700">SF</AvatarFallback>
+                </Avatar>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Camera className="w-4 h-4" />
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  className="hidden"
+                />
+              </div>

@@ -181,3 +181,13 @@ interface Income {
   const progressPercentage = (totalExpenses / monthlyLimit) * 100
   const remainingBudget = monthlyLimit - totalExpenses
   const totalBalance = totalIncome - totalExpenses
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setProfilePhoto(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }

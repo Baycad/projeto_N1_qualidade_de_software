@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useRef } from 'react';
 
 import { FaUserCircle, FaSun, FaMoon } from 'react-icons/fa';
@@ -19,44 +17,44 @@ export default function Page() {
   const [profilePhoto, setProfilePhoto] = useState('/professional-man-smiling.png');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  const toggleDarkMode = () => setDarkMode(!darkMode);
 
   return (
     <div className={darkMode ? 'dark' : ''}>
       <header className="flex justify-between items-center p-4">
-        <div className="flex items-center gap-2">
-          <ArrowLeft className="w-6 h-6" />
-          <h1 className="text-xl font-bold">Dashboard</h1>
-        </div>
-        <Button onClick={toggleDarkMode} variant="secondary">
+        <button onClick={toggleDarkMode}>
           {darkMode ? <FaSun /> : <FaMoon />}
-        </Button>
+        </button>
+        <img
+          src={profilePhoto}
+          alt="Profile"
+          className="w-10 h-10 rounded-full cursor-pointer"
+          onClick={() => fileInputRef.current?.click()}
+        />
+        <input type="file" ref={fileInputRef} className="hidden" />
       </header>
 
       <main className="p-4">
-        <Card className="p-4 flex items-center gap-4">
-          <img
-            src={profilePhoto}
-            alt="Profile"
-            className="w-16 h-16 rounded-full object-cover"
-            onClick={() => fileInputRef.current?.click()}
-          />
-          <input type="file" ref={fileInputRef} className="hidden" />
-          <h2 className="text-lg font-semibold">Olá, Usuário!</h2>
-        </Card>
-
-        <Tabs defaultValue="finances" className="mt-4">
+        <Tabs defaultValue="tab1">
           <TabsList>
-            <TabsTrigger value="finances">Finanças</TabsTrigger>
-            <TabsTrigger value="profile">Perfil</TabsTrigger>
+            <TabsTrigger value="tab1">Financeiro</TabsTrigger>
+            <TabsTrigger value="tab2">Perfil</TabsTrigger>
           </TabsList>
-          <TabsContent value="finances">
-            <p>Conteúdo das finanças aqui</p>
+
+          <TabsContent value="tab1">
+            <Card className="p-4">
+              <GiPayMoney className="text-2xl mb-2" />
+              <p>Resumo financeiro</p>
+              <Button>Ver detalhes</Button>
+            </Card>
           </TabsContent>
-          <TabsContent value="profile">
-            <p>Conteúdo do perfil aqui</p>
+
+          <TabsContent value="tab2">
+            <Card className="p-4">
+              <FaUserCircle className="text-2xl mb-2" />
+              <p>Informações do perfil</p>
+              <Button>Editar perfil</Button>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

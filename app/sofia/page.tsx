@@ -83,3 +83,26 @@ interface Income {
   amount: number;
   date: string;
 }
+ export default function SofiaPage() {
+  const [monthlyLimit, setMonthlyLimit] = useState(5000)
+  const [expenses, setExpenses] = useState<Expense[]>([])
+  const [fixedExpenses, setFixedExpenses] = useState<FixedExpense[]>([])
+  const [installments, setInstallments] = useState<InstallmentItem[]>([])
+  const [incomes, setIncomes] = useState<Income[]>([])
+  const [investment, setInvestment] = useState(0)
+  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  const [quickExpense, setQuickExpense] = useState({ amount: "", description: "", category: "Outros" })
+  const [newExpense, setNewExpense] = useState({ category: "", amount: "", date: "", description: "" })
+  const [newFixedExpense, setNewFixedExpense] = useState({ category: "", amount: "", description: "" })
+  const [newIncome, setNewIncome] = useState({ amount: "" })
+  const [newInvestment, setNewInvestment] = useState({ amount: "" })
+  const [newInstallment, setNewInstallment] = useState({
+    name: "",
+    totalAmount: "",
+    totalInstallments: "",
+    remainingAmount: "",
+  })
+
+  const [profilePhoto, setProfilePhoto] = useState("/professional-woman-smiling.png")
+  const fileInputRef = useRef<HTMLInputElement>(null)

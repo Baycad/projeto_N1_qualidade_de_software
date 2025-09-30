@@ -191,3 +191,40 @@ interface Income {
       reader.readAsDataURL(file)
     }
   }
+  const addIncome = () => {
+    if (newIncome.amount) {
+      const numericAmount = parseCurrencyToNumber(newIncome.amount)
+      const income: Income = {
+        id: Date.now().toString(),
+        description: "Entrada",
+        amount: numericAmount,
+        date: new Date().toISOString().split("T")[0],
+      }
+      setIncomes([...incomes, income])
+      setNewIncome({ amount: "" })
+    }
+  }
+
+  const addInvestment = () => {
+    if (newInvestment.amount) {
+      const numericAmount = parseCurrencyToNumber(newInvestment.amount)
+      setInvestment(investment + numericAmount)
+      setNewInvestment({ amount: "" })
+    }
+  }
+
+  const addQuickExpense = () => {
+    if (quickExpense.amount && quickExpense.description) {
+      const newExp: Expense = {
+        id: Date.now().toString(),
+        category: quickExpense.category,
+        amount: Number.parseFloat(quickExpense.amount),
+        date: new Date().toISOString().split("T")[0],
+        description: quickExpense.description,
+        isFixed: false,
+        isPaid: false,
+      }
+      setExpenses([...expenses, newExp])
+      setQuickExpense({ amount: "", description: "", category: "Outros" })
+    }
+  }

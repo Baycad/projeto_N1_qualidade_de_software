@@ -106,3 +106,43 @@ interface Income {
 
   const [profilePhoto, setProfilePhoto] = useState("/professional-woman-smiling.png")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const checkMonthlyReset = () => {
+      const today = new Date()
+      const currentDate = today.getDate()
+      const currentMonth = today.getMonth()
+      const currentYear = today.getFullYear()
+
+      if (currentDate === 1) {
+        const lastResetKey = "sofia-last-reset"
+        const lastReset = localStorage.getItem(lastResetKey)
+        const currentMonthKey = `${currentYear}-${currentMonth}`
+
+        if (lastReset !== currentMonthKey) {
+          console.log("[v0] Performing monthly reset for Sofia")
+          setMonthlyLimit(5000)
+          setExpenses([])
+          setIncomes([])
+          setFixedExpenses((prev) => prev.map((expense) => ({ ...expense, isPaid: false })))
+          localStorage.setItem(lastResetKey, currentMonthKey)
+          console.log("[v0] Monthly reset completed for Sofia")
+        }
+      }
+    }
+    checkMonthlyReset()
+
+    const now = new Date()
+    const tomorrow = new Date(now)
+    tomorrow.setDate(now.getDate() + 1)
+    tomorrow.setHours(0, 0, 0, 0)
+
+    const timeUntilMidnight = tomorrow.getTime() - now.getTime()
+
+    const timeoutId = setTimeout(() => {
+      checkMonthlyReset()
+      const intervalId = setInterval(checkMonthlyReset, 24 * 60 * 60 * 1000)
+      return () => clearInterval(intervalId)
+    }, timeUntilMidnight)
+
+    return () => clearTimeout(timeoutId)
+  }, [])

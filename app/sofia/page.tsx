@@ -160,3 +160,24 @@ interface Income {
     const numericValue = value.replace(/[^\d,]/g, "").replace(",", ".")
     return Number.parseFloat(numericValue) || 0
   }
+  const totalInstallmentPayments = installments.reduce(
+    (sum, item) => sum + (item.isPaid ? 0 : item.totalAmount - item.remainingAmount),
+    0,
+  )
+  const totalInstallmentRemaining = installments.reduce(
+    (sum, item) => sum + (item.isPaid ? 0 : item.remainingAmount),
+    0,
+  )
+  const totalInstallmentItems = installments.filter((item) => !item.isPaid).length
+  const totalPaidFixedExpenses = fixedExpenses.reduce((sum, expense) => sum + (expense.isPaid ? expense.amount : 0), 0)
+  const totalUnpaidFixedExpenses = fixedExpenses.reduce(
+    (sum, expense) => sum + (expense.isPaid ? 0 : expense.amount),
+    0,
+  )
+  const totalExpenses =
+    expenses.reduce((sum, expense) => sum + (expense.isPaid ? 0 : expense.amount), 0) +
+    totalPaidFixedExpenses + totalInstallmentPayments
+  const totalIncome = incomes.reduce((sum, income) => sum + income.amount, 0)
+  const progressPercentage = (totalExpenses / monthlyLimit) * 100
+  const remainingBudget = monthlyLimit - totalExpenses
+  const totalBalance = totalIncome - totalExpenses

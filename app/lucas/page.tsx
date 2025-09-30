@@ -42,6 +42,28 @@ export default function Page() {
     { id: 3, description: 'Freelance Design', amount: 800, date: '2025-09-20', category: 'Receita' },
   ]);
 
+  // Estado do formulário
+  const [newTransaction, setNewTransaction] = useState<Transaction>({
+    id: 0,
+    description: '',
+    amount: 0,
+    date: '',
+    category: '',
+  });
+
+  const handleAddTransaction = () => {
+    if (!newTransaction.description || !newTransaction.date || !newTransaction.category) return;
+
+    const nextTransaction = {
+      ...newTransaction,
+      id: transactions.length + 1,
+    };
+    setTransactions([...transactions, nextTransaction]);
+
+    // Resetar formulário
+    setNewTransaction({ id: 0, description: '', amount: 0, date: '', category: '' });
+  };
+
   return (
     <div className={darkMode ? 'dark' : ''}>
       <header className="flex justify-between items-center p-4">
@@ -82,6 +104,39 @@ export default function Page() {
             <Card className="p-4 mb-4">
               <GiPayMoney className="text-2xl mb-2" />
               <p>Resumo financeiro</p>
+            </Card>
+
+            {/* Formulário de nova transação */}
+            <Card className="p-4 mb-4">
+              <h3 className="font-bold mb-2">Adicionar Transação</h3>
+              <input
+                type="text"
+                placeholder="Descrição"
+                className="border p-1 mb-2 w-full"
+                value={newTransaction.description}
+                onChange={(e) => setNewTransaction({ ...newTransaction, description: e.target.value })}
+              />
+              <input
+                type="number"
+                placeholder="Valor"
+                className="border p-1 mb-2 w-full"
+                value={newTransaction.amount}
+                onChange={(e) => setNewTransaction({ ...newTransaction, amount: Number(e.target.value) })}
+              />
+              <input
+                type="date"
+                className="border p-1 mb-2 w-full"
+                value={newTransaction.date}
+                onChange={(e) => setNewTransaction({ ...newTransaction, date: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Categoria"
+                className="border p-1 mb-2 w-full"
+                value={newTransaction.category}
+                onChange={(e) => setNewTransaction({ ...newTransaction, category: e.target.value })}
+              />
+              <Button onClick={handleAddTransaction}>Adicionar</Button>
             </Card>
 
             {transactions.map((tx) => (

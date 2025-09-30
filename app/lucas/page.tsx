@@ -12,6 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { ArrowLeft } from 'lucide-react';
 
+interface Transaction {
+  id: number;
+  description: string;
+  amount: number;
+  date: string;
+  category: string;
+}
+
 export default function Page() {
   const [darkMode, setDarkMode] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState('/professional-man-smiling.png');
@@ -26,6 +34,13 @@ export default function Page() {
       setProfilePhoto(fileUrl);
     }
   };
+
+  // Lista de transações simuladas
+  const [transactions, setTransactions] = useState<Transaction[]>([
+    { id: 1, description: 'Pagamento de Luz', amount: 120.5, date: '2025-09-28', category: 'Conta' },
+    { id: 2, description: 'Aluguel', amount: 1500, date: '2025-09-01', category: 'Moradia' },
+    { id: 3, description: 'Freelance Design', amount: 800, date: '2025-09-20', category: 'Receita' },
+  ]);
 
   return (
     <div className={darkMode ? 'dark' : ''}>
@@ -64,11 +79,28 @@ export default function Page() {
           </TabsList>
 
           <TabsContent value="tab1">
-            <Card className="p-4">
+            <Card className="p-4 mb-4">
               <GiPayMoney className="text-2xl mb-2" />
               <p>Resumo financeiro</p>
-              <Button>Ver detalhes</Button>
             </Card>
+
+            {transactions.map((tx) => (
+              <Card key={tx.id} className="p-4 mb-2 flex justify-between items-center">
+                <div>
+                  <p className="font-bold">{tx.description}</p>
+                  <p className="text-sm text-gray-500">{tx.category} • {tx.date}</p>
+                </div>
+                <div className="text-right">
+                  <p className={tx.amount < 0 ? 'text-red-500' : 'text-green-500'}>
+                    R$ {tx.amount.toFixed(2)}
+                  </p>
+                  <div className="flex gap-2 mt-1">
+                    <Button size="sm">Editar</Button>
+                    <Button size="sm" variant="destructive">Excluir</Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
           </TabsContent>
 
           <TabsContent value="tab2">
